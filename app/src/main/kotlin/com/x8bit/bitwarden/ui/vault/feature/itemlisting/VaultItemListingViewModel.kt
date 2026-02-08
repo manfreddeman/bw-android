@@ -195,6 +195,13 @@ class VaultItemListingViewModel @Inject constructor(
             isPremium = userState.activeAccount.isPremium,
             isRefreshing = false,
             isArchiveEnabled = featureFlagManager.getFeatureFlag(FlagKey.ArchiveItems),
+            sortOption = settingsRepository.vaultItemListingSortOption
+                ?.let { storedValue ->
+                    VaultItemListingState.SortOption.entries.firstOrNull {
+                        it.name == storedValue
+                    }
+                }
+                ?: VaultItemListingState.SortOption.ALPHABETICALLY,
         )
     },
 ) {
@@ -1531,6 +1538,7 @@ class VaultItemListingViewModel @Inject constructor(
         mutableStateFlow.update { currentState ->
             currentState.copy(sortOption = action.sortOption)
         }
+        settingsRepository.vaultItemListingSortOption = action.sortOption.name
         vaultRepository.vaultDataStateFlow.value.data?.let { vaultData ->
             updateStateWithVaultData(vaultData, clearDialogState = false)
         }
