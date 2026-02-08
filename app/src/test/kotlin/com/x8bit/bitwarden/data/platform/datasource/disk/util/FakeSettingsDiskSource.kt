@@ -90,6 +90,7 @@ class FakeSettingsDiskSource(
     private var hasSeenGeneratorCoachMark: Boolean? = null
     private var storedIsDynamicColorsEnabled: Boolean? = null
     private var storedBrowserAutofillDialogReshowTime: Instant? = null
+    private var storedVaultItemListingSortOption: String? = null
 
     private val mutableShowAutoFillSettingBadgeFlowMap =
         mutableMapOf<String, MutableSharedFlow<Boolean?>>()
@@ -490,6 +491,12 @@ class FakeSettingsDiskSource(
     override fun getAppResumeScreen(userId: String): AppResumeScreenData? {
         return storedAppResumeScreenData[userId]?.let { Json.decodeFromStringOrNull(it) }
     }
+
+    override var vaultItemListingSortOption: String?
+        get() = storedVaultItemListingSortOption
+        set(value) {
+            storedVaultItemListingSortOption = value
+        }
 
     /**
      * Asserts that the stored introducing archive action card dismissed matches the [expected] one.

@@ -634,6 +634,12 @@ class SettingsRepositoryImpl(
             )
     }
 
+    override var vaultItemListingSortOption: String?
+        get() = settingsDiskSource.vaultItemListingSortOption
+        set(value) {
+            settingsDiskSource.vaultItemListingSortOption = value
+        }
+
     /**
      * If there isn't already one generated, generate a symmetric sync key that would be used
      * for communicating via IPC.

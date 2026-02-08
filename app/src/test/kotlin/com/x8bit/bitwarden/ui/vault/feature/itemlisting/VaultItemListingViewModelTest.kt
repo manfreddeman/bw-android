@@ -207,6 +207,8 @@ class VaultItemListingViewModelTest : BaseViewModelTest() {
         every { isIconLoadingDisabledFlow } returns mutableIsIconLoadingDisabledFlow
         every { getPullToRefreshEnabledFlow() } returns mutablePullToRefreshEnabledFlow
         every { isUnlockWithPinEnabled } returns false
+        every { vaultItemListingSortOption } returns null
+        every { vaultItemListingSortOption = any() } just runs
     }
 
     private val mockAuthRepository = mockk<AuthRepository>(relaxed = true)

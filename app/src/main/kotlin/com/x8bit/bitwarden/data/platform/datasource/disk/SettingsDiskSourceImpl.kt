@@ -51,6 +51,7 @@ private const val IS_DYNAMIC_COLORS_ENABLED = "isDynamicColorsEnabled"
 private const val BROWSER_AUTOFILL_DIALOG_RESHOW_TIME = "browserAutofillDialogReshowTime"
 private const val INTRODUCING_ARCHIVE_ACTION_CARD_DISMISSED =
     "introducingArchiveActionCardDismissed"
+private const val VAULT_ITEM_LISTING_SORT_OPTION_KEY = "vaultItemListingSortOption"
 
 /**
  * Primary implementation of [SettingsDiskSource].
@@ -604,6 +605,12 @@ class SettingsDiskSourceImpl(
 
     override fun getAppResumeScreen(userId: String): AppResumeScreenData? =
         getString(RESUME_SCREEN.appendIdentifier(userId))?.let { json.decodeFromStringOrNull(it) }
+
+    override var vaultItemListingSortOption: String?
+        get() = getString(key = VAULT_ITEM_LISTING_SORT_OPTION_KEY)
+        set(value) {
+            putString(key = VAULT_ITEM_LISTING_SORT_OPTION_KEY, value = value)
+        }
 
     private fun getMutableIntroducingArchiveActionCardDismissedFlow(
         userId: String,

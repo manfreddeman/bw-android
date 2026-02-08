@@ -448,4 +448,10 @@ interface SettingsDiskSource : FlightRecorderDiskSource {
      * Gets the screen data to resume to for the device identified by [userId] or null if no screen
      */
     fun getAppResumeScreen(userId: String): AppResumeScreenData?
+
+    /**
+     * The currently persisted vault item listing sort option stored as the enum name
+     * (e.g., "ALPHABETICALLY", "BY_DATE"), or `null` if not set.
+     */
+    var vaultItemListingSortOption: String?
 }
