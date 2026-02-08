@@ -201,7 +201,7 @@ class VaultItemListingViewModel @Inject constructor(
                         it.name == storedValue
                     }
                 }
-                ?: VaultItemListingState.SortOption.ALPHABETICALLY,
+                ?: VaultItemListingState.SortOption.BY_DATE,
         )
     },
 ) {
