@@ -163,6 +163,11 @@ interface VaultRepository :
     suspend fun exportVaultDataToCxf(ciphers: List<CipherListView>): Result<String>
 
     /**
+     * Updates the last used date for a cipher with the given [cipherId].
+     */
+    suspend fun updateCipherLastUsedDate(cipherId: String)
+
+    /**
      * Flow that represents the data for a specific vault list item as found by ID. This may emit
      * `null` if the item cannot be found.
      */

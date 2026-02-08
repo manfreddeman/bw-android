@@ -194,6 +194,7 @@ class VaultItemListingViewModelTest : BaseViewModelTest() {
         every { lockVault(any(), any()) } just runs
         every { sync(forced = any()) } just runs
         coEvery { getCipher(any()) } returns GetCipherResult.Success(createMockCipherView(1))
+        coEvery { updateCipherLastUsedDate(any()) } just runs
     }
     private val environmentRepository: EnvironmentRepository = mockk {
         every { environment } returns Environment.Us

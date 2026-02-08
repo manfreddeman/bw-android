@@ -11,6 +11,7 @@ import com.bitwarden.network.model.createMockDomains
 import com.bitwarden.network.model.createMockFolder
 import com.bitwarden.network.model.createMockSend
 import com.x8bit.bitwarden.data.vault.datasource.disk.dao.FakeCiphersDao
+import com.x8bit.bitwarden.data.vault.datasource.disk.dao.FakeCipherLocalDataDao
 import com.x8bit.bitwarden.data.vault.datasource.disk.dao.FakeCollectionsDao
 import com.x8bit.bitwarden.data.vault.datasource.disk.dao.FakeDomainsDao
 import com.x8bit.bitwarden.data.vault.datasource.disk.dao.FakeFoldersDao
@@ -37,6 +38,7 @@ class VaultDiskSourceTest {
     private val json = CoreModule.providesJson()
     private val dispatcherManager: FakeDispatcherManager = FakeDispatcherManager()
     private lateinit var ciphersDao: FakeCiphersDao
+    private lateinit var cipherLocalDataDao: FakeCipherLocalDataDao
     private lateinit var collectionsDao: FakeCollectionsDao
     private lateinit var domainsDao: FakeDomainsDao
     private lateinit var foldersDao: FakeFoldersDao
@@ -47,12 +49,14 @@ class VaultDiskSourceTest {
     @BeforeEach
     fun setup() {
         ciphersDao = FakeCiphersDao()
+        cipherLocalDataDao = FakeCipherLocalDataDao()
         collectionsDao = FakeCollectionsDao()
         domainsDao = FakeDomainsDao()
         foldersDao = FakeFoldersDao()
         sendsDao = FakeSendsDao()
         vaultDiskSource = VaultDiskSourceImpl(
             ciphersDao = ciphersDao,
+            cipherLocalDataDao = cipherLocalDataDao,
             collectionsDao = collectionsDao,
             domainsDao = domainsDao,
             foldersDao = foldersDao,

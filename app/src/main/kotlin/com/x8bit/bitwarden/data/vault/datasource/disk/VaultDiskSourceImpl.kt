@@ -5,11 +5,13 @@ import com.bitwarden.core.data.repository.util.bufferedMutableSharedFlow
 import com.bitwarden.core.data.util.decodeFromStringWithErrorCallback
 import com.bitwarden.network.model.SyncResponseJson
 import com.x8bit.bitwarden.data.vault.datasource.disk.dao.CiphersDao
+import com.x8bit.bitwarden.data.vault.datasource.disk.dao.CipherLocalDataDao
 import com.x8bit.bitwarden.data.vault.datasource.disk.dao.CollectionsDao
 import com.x8bit.bitwarden.data.vault.datasource.disk.dao.DomainsDao
 import com.x8bit.bitwarden.data.vault.datasource.disk.dao.FoldersDao
 import com.x8bit.bitwarden.data.vault.datasource.disk.dao.SendsDao
 import com.x8bit.bitwarden.data.vault.datasource.disk.entity.CipherEntity
+import com.x8bit.bitwarden.data.vault.datasource.disk.entity.CipherLocalDataEntity
 import com.x8bit.bitwarden.data.vault.datasource.disk.entity.CollectionEntity
 import com.x8bit.bitwarden.data.vault.datasource.disk.entity.DomainsEntity
 import com.x8bit.bitwarden.data.vault.datasource.disk.entity.FolderEntity
@@ -25,6 +27,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
 import timber.log.Timber
+import java.time.ZonedDateTime
 
 /**
  * Default implementation of [VaultDiskSource].
@@ -32,6 +35,7 @@ import timber.log.Timber
 @Suppress("TooManyFunctions", "LongParameterList")
 class VaultDiskSourceImpl(
     private val ciphersDao: CiphersDao,
+    private val cipherLocalDataDao: CipherLocalDataDao,
     private val collectionsDao: CollectionsDao,
     private val domainsDao: DomainsDao,
     private val foldersDao: FoldersDao,
@@ -395,13 +399,40 @@ class VaultDiskSourceImpl(
             val deferredDomains = async { domainsDao.deleteDomains(userId = userId) }
             val deferredFolders = async { foldersDao.deleteAllFolders(userId = userId) }
             val deferredSends = async { sendsDao.deleteAllSends(userId = userId) }
+            val deferredLocalData = async {
+                cipherLocalDataDao.deleteAllCipherLocalData(userId = userId)
+            }
             awaitAll(
                 deferredCiphers,
                 deferredCollections,
                 deferredDomains,
                 deferredFolders,
                 deferredSends,
+                deferredLocalData,
             )
         }
     }
+
+    override suspend fun saveCipherLastUsedDate(
+        userId: String,
+        cipherId: String,
+        lastUsedDate: ZonedDateTime,
+    ) {
+        cipherLocalDataDao.insertCipherLocalData(
+            cipherLocalData = CipherLocalDataEntity(
+                cipherId = cipherId,
+                userId = userId,
+                lastUsedDate = lastUsedDate,
+            ),
+        )
+    }
+
+    override fun getCipherLastUsedDatesFlow(
+        userId: String,
+    ): Flow<Map<String, ZonedDateTime>> =
+        cipherLocalDataDao
+            .getAllCipherLocalDataFlow(userId = userId)
+            .map { entities ->
+                entities.associate { it.cipherId to it.lastUsedDate }
+            }
 }

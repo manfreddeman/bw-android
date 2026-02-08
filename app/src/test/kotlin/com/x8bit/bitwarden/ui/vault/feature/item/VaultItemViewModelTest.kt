@@ -103,6 +103,7 @@ class VaultItemViewModelTest : BaseViewModelTest() {
         every { getVaultItemStateFlow(VAULT_ITEM_ID) } returns mutableVaultItemFlow
         every { collectionsStateFlow } returns mutableCollectionsStateFlow
         every { foldersStateFlow } returns mutableFoldersStateFlow
+        coEvery { updateCipherLastUsedDate(any()) } just runs
     }
 
     private val mockFileManager: FileManager = mockk()

@@ -2081,6 +2081,7 @@ class VaultItemListingViewModel @Inject constructor(
     ) {
         viewModelScope.launch {
             val cipherView = getCipherViewOrNull(cipherId = itemId) ?: return@launch
+            vaultRepository.updateCipherLastUsedDate(cipherId = itemId)
             when (autofillSelectionData.framework) {
                 AutofillSelectionData.Framework.ACCESSIBILITY -> {
                     accessibilitySelectionManager.emitAccessibilitySelection(

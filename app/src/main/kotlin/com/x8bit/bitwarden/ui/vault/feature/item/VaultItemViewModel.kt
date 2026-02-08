@@ -625,6 +625,9 @@ class VaultItemViewModel @Inject constructor(
             organizationEventManager.trackEvent(
                 event = OrganizationEvent.CipherClientCopiedPassword(cipherId = state.vaultItemId),
             )
+            viewModelScope.launch {
+                vaultRepository.updateCipherLastUsedDate(cipherId = state.vaultItemId)
+            }
         }
     }
 
