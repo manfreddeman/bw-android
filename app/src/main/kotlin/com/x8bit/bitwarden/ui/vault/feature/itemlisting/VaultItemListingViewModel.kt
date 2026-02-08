@@ -318,6 +318,7 @@ class VaultItemListingViewModel @Inject constructor(
             is VaultItemListingsAction.LockClick -> handleLockClick()
             is VaultItemListingsAction.SyncClick -> handleSyncClick()
             is VaultItemListingsAction.SearchIconClick -> handleSearchIconClick()
+            is VaultItemListingsAction.SortOptionClick -> handleSortOptionClick(action)
             is VaultItemListingsAction.OverflowOptionClick -> handleOverflowOptionClick(action)
             is VaultItemListingsAction.ItemClick -> handleItemClick(action)
             is VaultItemListingsAction.MasterPasswordRepromptSubmit -> {
@@ -1526,6 +1527,15 @@ class VaultItemListingViewModel @Inject constructor(
         )
     }
 
+    private fun handleSortOptionClick(action: VaultItemListingsAction.SortOptionClick) {
+        mutableStateFlow.update { currentState ->
+            currentState.copy(sortOption = action.sortOption)
+        }
+        vaultRepository.vaultDataStateFlow.value.data?.let { vaultData ->
+            updateStateWithVaultData(vaultData, clearDialogState = false)
+        }
+    }
+
     private fun handleOverflowOptionClick(action: VaultItemListingsAction.OverflowOptionClick) {
         when (val overflowAction = action.action) {
             is ListingItemOverflowAction.SendAction.CopyUrlClick -> {
@@ -2643,6 +2653,7 @@ class VaultItemListingViewModel @Inject constructor(
                             isPremiumUser = state.isPremium,
                             restrictItemTypesPolicyOrgIds = state.restrictItemTypesPolicyOrgIds,
                             isArchiveEnabled = state.isArchiveEnabled,
+                            sortOption = state.sortOption,
                         )
                     }
 
@@ -2851,7 +2862,23 @@ data class VaultItemListingState(
     val isPremium: Boolean,
     val isRefreshing: Boolean,
     val isArchiveEnabled: Boolean,
+    val sortOption: SortOption = SortOption.ALPHABETICALLY,
 ) {
+
+    /**
+     * Options for sorting vault items.
+     */
+    enum class SortOption {
+        /**
+         * Sort items alphabetically by name.
+         */
+        ALPHABETICALLY,
+
+        /**
+         * Sort items by last revision date (newest first).
+         */
+        BY_DATE,
+    }
     /**
      * Indicates what action card to display.
      */
@@ -3679,6 +3706,13 @@ sealed class VaultItemListingsAction {
      * Click the search icon.
      */
     data object SearchIconClick : VaultItemListingsAction()
+
+    /**
+     * Click the sort option button.
+     */
+    data class SortOptionClick(
+        val sortOption: VaultItemListingState.SortOption,
+    ) : VaultItemListingsAction()
 
     /**
      * Click the add item button.

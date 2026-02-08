@@ -469,6 +469,27 @@ private fun VaultItemListingScaffold(
                                     text = stringResource(id = BitwardenString.lock),
                                     onClick = vaultItemListingHandlers.lockClick,
                                 ),
+                                OverflowMenuItemData(
+                                    text = if (state.sortOption ==
+                                        VaultItemListingState.SortOption.ALPHABETICALLY
+                                    ) {
+                                        stringResource(id = BitwardenString.sort_by_date)
+                                    } else {
+                                        stringResource(
+                                            id = BitwardenString.sort_alphabetically,
+                                        )
+                                    },
+                                    onClick = {
+                                        val newSortOption = if (state.sortOption ==
+                                            VaultItemListingState.SortOption.ALPHABETICALLY
+                                        ) {
+                                            VaultItemListingState.SortOption.BY_DATE
+                                        } else {
+                                            VaultItemListingState.SortOption.ALPHABETICALLY
+                                        }
+                                        vaultItemListingHandlers.sortOptionClick(newSortOption)
+                                    },
+                                ),
                             ),
                         )
                     }

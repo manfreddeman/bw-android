@@ -108,7 +108,7 @@ fun SendView.determineListingPredicate(
 /**
  * Transforms a list of [CipherListView] into [VaultItemListingState.ViewState].
  */
-@Suppress("CyclomaticComplexMethod", "LongMethod", "LongParameterList")
+@Suppress("CyclomaticComplexity", "CyclomaticComplexMethod", "LongMethod", "LongParameterList")
 fun VaultData.toViewState(
     itemListingType: VaultItemListingState.ItemListingType.Vault,
     vaultFilterType: VaultFilterType,
@@ -121,6 +121,7 @@ fun VaultData.toViewState(
     isPremiumUser: Boolean,
     restrictItemTypesPolicyOrgIds: List<String>,
     isArchiveEnabled: Boolean,
+    sortOption: VaultItemListingState.SortOption = VaultItemListingState.SortOption.ALPHABETICALLY,
 ): VaultItemListingState.ViewState {
     val filteredCipherViewList = decryptCipherListResult
         .successes
@@ -129,6 +130,7 @@ fun VaultData.toViewState(
             vaultFilterType = vaultFilterType,
             restrictItemTypesPolicyOrgIds = restrictItemTypesPolicyOrgIds,
         )
+        .applySorting(sortOption)
 
     val filteredFailuresCipherViewList = decryptCipherListResult
         .failures
@@ -604,3 +606,10 @@ private fun List<CipherListView>.applyFilters(
     .filter { it.determineListingPredicate(itemListingType) }
     .applyRestrictItemTypesPolicy(restrictItemTypesPolicyOrgIds)
     .toFilteredList(vaultFilterType)
+
+private fun List<CipherListView>.applySorting(
+    sortOption: VaultItemListingState.SortOption,
+): List<CipherListView> = when (sortOption) {
+    VaultItemListingState.SortOption.ALPHABETICALLY -> this.sortedBy { it.name }
+    VaultItemListingState.SortOption.BY_DATE -> this.sortedByDescending { it.revisionDate }
+}

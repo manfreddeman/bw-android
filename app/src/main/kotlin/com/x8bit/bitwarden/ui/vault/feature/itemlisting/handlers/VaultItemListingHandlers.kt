@@ -27,6 +27,7 @@ data class VaultItemListingHandlers(
     val refreshClick: () -> Unit,
     val syncClick: () -> Unit,
     val lockClick: () -> Unit,
+    val sortOptionClick: (VaultItemListingState.SortOption) -> Unit,
     val overflowItemClick: (action: ListingItemOverflowAction) -> Unit,
     val dismissDialogRequest: () -> Unit,
     val dismissCredentialManagerErrorDialog: (Text) -> Unit,
@@ -90,6 +91,9 @@ data class VaultItemListingHandlers(
                 refreshClick = { viewModel.trySendAction(VaultItemListingsAction.RefreshClick) },
                 syncClick = { viewModel.trySendAction(VaultItemListingsAction.SyncClick) },
                 lockClick = { viewModel.trySendAction(VaultItemListingsAction.LockClick) },
+                sortOptionClick = {
+                    viewModel.trySendAction(VaultItemListingsAction.SortOptionClick(it))
+                },
                 overflowItemClick = {
                     viewModel.trySendAction(VaultItemListingsAction.OverflowOptionClick(it))
                 },
