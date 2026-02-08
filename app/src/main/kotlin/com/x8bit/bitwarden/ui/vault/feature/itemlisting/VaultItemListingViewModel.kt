@@ -2886,6 +2886,11 @@ data class VaultItemListingState(
          * Sort items by last revision date (newest first).
          */
         BY_DATE,
+
+        /**
+         * Sort items by last used date (most recently used first).
+         */
+        LAST_USED,
     }
     /**
      * Indicates what action card to display.

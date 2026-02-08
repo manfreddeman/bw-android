@@ -612,4 +612,7 @@ private fun List<CipherListView>.applySorting(
 ): List<CipherListView> = when (sortOption) {
     VaultItemListingState.SortOption.ALPHABETICALLY -> this.sortedBy { it.name }
     VaultItemListingState.SortOption.BY_DATE -> this.sortedByDescending { it.revisionDate }
+    VaultItemListingState.SortOption.LAST_USED -> this.sortedByDescending {
+        it.localData?.lastUsedDate ?: it.revisionDate
+    }
 }
