@@ -305,7 +305,8 @@ interface SettingsRepository : FlightRecorderManager {
     fun getAppRegisteredForExportFlow(userId: String): StateFlow<Boolean>
 
     /**
-     * The currently persisted vault item listing sort option (or `null` if not set).
+     * The currently persisted vault item listing sort option stored as the enum name
+     * (e.g., "ALPHABETICALLY", "BY_DATE"), or `null` if not set.
      */
     var vaultItemListingSortOption: String?
 }
