@@ -98,6 +98,7 @@
     <string name="lock">Lock</string>
     <string name="sort_alphabetically">Sort by name</string>
     <string name="sort_by_date">Sort by date</string>
+    <string name="sort_by_last_used">Sort by last used</string>
     <string name="fifteen_minutes">15 minutes</string>
     <string name="one_hour">1 hour</string>
     <string name="one_minute">1 minute</string>

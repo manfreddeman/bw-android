@@ -470,22 +470,26 @@ private fun VaultItemListingScaffold(
                                     onClick = vaultItemListingHandlers.lockClick,
                                 ),
                                 OverflowMenuItemData(
-                                    text = if (state.sortOption ==
-                                        VaultItemListingState.SortOption.ALPHABETICALLY
-                                    ) {
-                                        stringResource(id = BitwardenString.sort_by_date)
-                                    } else {
-                                        stringResource(
-                                            id = BitwardenString.sort_alphabetically,
-                                        )
+                                    text = when (state.sortOption) {
+                                        VaultItemListingState.SortOption.ALPHABETICALLY ->
+                                            stringResource(id = BitwardenString.sort_by_date)
+                                        VaultItemListingState.SortOption.BY_DATE ->
+                                            stringResource(
+                                                id = BitwardenString.sort_by_last_used,
+                                            )
+                                        VaultItemListingState.SortOption.LAST_USED ->
+                                            stringResource(
+                                                id = BitwardenString.sort_alphabetically,
+                                            )
                                     },
                                     onClick = {
-                                        val newSortOption = if (state.sortOption ==
-                                            VaultItemListingState.SortOption.ALPHABETICALLY
-                                        ) {
-                                            VaultItemListingState.SortOption.BY_DATE
-                                        } else {
-                                            VaultItemListingState.SortOption.ALPHABETICALLY
+                                        val newSortOption = when (state.sortOption) {
+                                            VaultItemListingState.SortOption.ALPHABETICALLY ->
+                                                VaultItemListingState.SortOption.BY_DATE
+                                            VaultItemListingState.SortOption.BY_DATE ->
+                                                VaultItemListingState.SortOption.LAST_USED
+                                            VaultItemListingState.SortOption.LAST_USED ->
+                                                VaultItemListingState.SortOption.ALPHABETICALLY
                                         }
                                         vaultItemListingHandlers.sortOptionClick(newSortOption)
                                     },
