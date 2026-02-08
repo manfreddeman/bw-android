@@ -130,6 +130,10 @@ class VaultRepositoryTest {
         vaultSyncManager = vaultSyncManager,
         credentialExchangeImportManager = credentialExchangeImportManager,
         pinProtectedUserKeyManager = pinProtectedUserKeyManager,
+        clock = java.time.Clock.fixed(
+            java.time.Instant.parse("2023-10-27T12:00:00Z"),
+            java.time.ZoneOffset.UTC,
+        ),
     )
 
     @BeforeEach

@@ -29,6 +29,7 @@ import com.bitwarden.vault.Field
 import com.bitwarden.vault.FieldType
 import com.bitwarden.vault.Identity
 import com.bitwarden.vault.Login
+import com.bitwarden.vault.LocalDataView
 import com.bitwarden.vault.LoginListView
 import com.bitwarden.vault.LoginUri
 import com.bitwarden.vault.PasswordHistory
@@ -671,6 +672,25 @@ fun List<CipherListView>.sortAlphabetically(): List<CipherListView> {
         },
     )
 }
+
+/**
+ * Populates the [CipherListView.localData] field with the stored last used dates.
+ */
+fun List<CipherListView>.populateLocalData(
+    lastUsedDates: Map<String, ZonedDateTime>,
+): List<CipherListView> =
+    map { cipherListView ->
+        val lastUsedDate = cipherListView.id?.let { lastUsedDates[it] }
+        if (lastUsedDate != null) {
+            cipherListView.copy(
+                localData = LocalDataView(
+                    lastUsedDate = lastUsedDate.toInstant(),
+                ),
+            )
+        } else {
+            cipherListView
+        }
+    }
 
 /**
  * Converts a Bitwarden SDK [EncryptionContext] object to a corresponding [CipherJsonRequest]

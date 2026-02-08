@@ -63,6 +63,7 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.security.GeneralSecurityException
 import java.time.Instant
+import java.time.ZonedDateTime
 import javax.crypto.Cipher
 
 /**
@@ -81,6 +82,7 @@ class VaultRepositoryImpl(
     private val vaultSyncManager: VaultSyncManager,
     private val credentialExchangeImportManager: CredentialExchangeImportManager,
     private val pinProtectedUserKeyManager: PinProtectedUserKeyManager,
+    private val clock: java.time.Clock,
     dispatcherManager: DispatcherManager,
 ) : VaultRepository,
     CipherManager by cipherManager,
@@ -522,6 +524,15 @@ class VaultRepositoryImpl(
                 account = account,
                 ciphers = ciphers,
             )
+    }
+
+    override suspend fun updateCipherLastUsedDate(cipherId: String) {
+        val userId = activeUserId ?: return
+        vaultDiskSource.saveCipherLastUsedDate(
+            userId = userId,
+            cipherId = cipherId,
+            lastUsedDate = ZonedDateTime.now(clock),
+        )
     }
 
     private suspend fun unlockVaultForUser(

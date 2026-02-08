@@ -5,12 +5,14 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.x8bit.bitwarden.data.vault.datasource.disk.convertor.ZonedDateTimeTypeConverter
+import com.x8bit.bitwarden.data.vault.datasource.disk.dao.CipherLocalDataDao
 import com.x8bit.bitwarden.data.vault.datasource.disk.dao.CiphersDao
 import com.x8bit.bitwarden.data.vault.datasource.disk.dao.CollectionsDao
 import com.x8bit.bitwarden.data.vault.datasource.disk.dao.DomainsDao
 import com.x8bit.bitwarden.data.vault.datasource.disk.dao.FoldersDao
 import com.x8bit.bitwarden.data.vault.datasource.disk.dao.SendsDao
 import com.x8bit.bitwarden.data.vault.datasource.disk.entity.CipherEntity
+import com.x8bit.bitwarden.data.vault.datasource.disk.entity.CipherLocalDataEntity
 import com.x8bit.bitwarden.data.vault.datasource.disk.entity.CollectionEntity
 import com.x8bit.bitwarden.data.vault.datasource.disk.entity.DomainsEntity
 import com.x8bit.bitwarden.data.vault.datasource.disk.entity.FolderEntity
@@ -22,16 +24,18 @@ import com.x8bit.bitwarden.data.vault.datasource.disk.entity.SendEntity
 @Database(
     entities = [
         CipherEntity::class,
+        CipherLocalDataEntity::class,
         CollectionEntity::class,
         DomainsEntity::class,
         FolderEntity::class,
         SendEntity::class,
     ],
-    version = 9,
+    version = 10,
     exportSchema = true,
     autoMigrations = [
         AutoMigration(from = 6, to = 7),
         AutoMigration(from = 7, to = 8),
+        AutoMigration(from = 9, to = 10),
     ],
 )
 @TypeConverters(ZonedDateTimeTypeConverter::class)
@@ -41,6 +45,11 @@ abstract class VaultDatabase : RoomDatabase() {
      * Provides the DAO for accessing cipher data.
      */
     abstract fun cipherDao(): CiphersDao
+
+    /**
+     * Provides the DAO for accessing cipher local data.
+     */
+    abstract fun cipherLocalDataDao(): CipherLocalDataDao
 
     /**
      * Provides the DAO for accessing collection data.

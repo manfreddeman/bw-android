@@ -2,6 +2,7 @@ package com.x8bit.bitwarden.data.vault.datasource.disk
 
 import com.bitwarden.network.model.SyncResponseJson
 import kotlinx.coroutines.flow.Flow
+import java.time.ZonedDateTime
 
 /**
  * Primary access point for disk information related to vault data.
@@ -120,4 +121,19 @@ interface VaultDiskSource {
      * Deletes all stored vault data from the data source for a given [userId].
      */
     suspend fun deleteVaultData(userId: String)
+
+    /**
+     * Saves the last used date for a cipher with [cipherId] for the given [userId].
+     */
+    suspend fun saveCipherLastUsedDate(
+        userId: String,
+        cipherId: String,
+        lastUsedDate: ZonedDateTime,
+    )
+
+    /**
+     * Retrieves all cipher last used dates for a given [userId] as a map of cipher ID to
+     * [ZonedDateTime].
+     */
+    fun getCipherLastUsedDatesFlow(userId: String): Flow<Map<String, ZonedDateTime>>
 }

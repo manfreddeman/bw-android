@@ -8,6 +8,7 @@ import com.x8bit.bitwarden.data.vault.datasource.disk.VaultDiskSource
 import com.x8bit.bitwarden.data.vault.datasource.disk.VaultDiskSourceImpl
 import com.x8bit.bitwarden.data.vault.datasource.disk.callback.DatabaseSchemeCallback
 import com.x8bit.bitwarden.data.vault.datasource.disk.convertor.ZonedDateTimeTypeConverter
+import com.x8bit.bitwarden.data.vault.datasource.disk.dao.CipherLocalDataDao
 import com.x8bit.bitwarden.data.vault.datasource.disk.dao.CiphersDao
 import com.x8bit.bitwarden.data.vault.datasource.disk.dao.CollectionsDao
 import com.x8bit.bitwarden.data.vault.datasource.disk.dao.DomainsDao
@@ -51,6 +52,11 @@ class VaultDiskModule {
 
     @Provides
     @Singleton
+    fun provideCipherLocalDataDao(database: VaultDatabase): CipherLocalDataDao =
+        database.cipherLocalDataDao()
+
+    @Provides
+    @Singleton
     fun provideCollectionDao(database: VaultDatabase): CollectionsDao = database.collectionDao()
 
     @Provides
@@ -69,6 +75,7 @@ class VaultDiskModule {
     @Singleton
     fun provideVaultDiskSource(
         ciphersDao: CiphersDao,
+        cipherLocalDataDao: CipherLocalDataDao,
         collectionsDao: CollectionsDao,
         domainsDao: DomainsDao,
         foldersDao: FoldersDao,
@@ -77,6 +84,7 @@ class VaultDiskModule {
         dispatcherManager: DispatcherManager,
     ): VaultDiskSource = VaultDiskSourceImpl(
         ciphersDao = ciphersDao,
+        cipherLocalDataDao = cipherLocalDataDao,
         collectionsDao = collectionsDao,
         domainsDao = domainsDao,
         foldersDao = foldersDao,

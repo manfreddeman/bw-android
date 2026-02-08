@@ -107,6 +107,7 @@ class VaultSyncManagerTest {
     private val vaultDiskSource: VaultDiskSource = mockk {
         coEvery { resyncVaultData(any()) } just runs
         every { getCiphersFlow(any()) } returns mutableGetCiphersFlow
+        every { getCipherLastUsedDatesFlow(any()) } returns MutableStateFlow(emptyMap())
     }
     private val vaultSdkSource: VaultSdkSource = mockk {
         every { clearCrypto(userId = any()) } just runs
@@ -1276,6 +1277,9 @@ class VaultSyncManagerTest {
         sendsFlow: Flow<List<SyncResponseJson.Send>> = bufferedMutableSharedFlow(),
     ) {
         coEvery { vaultDiskSource.getCiphersFlow(userId = userId) } returns ciphersFlow
+        coEvery {
+            vaultDiskSource.getCipherLastUsedDatesFlow(userId = userId)
+        } returns MutableStateFlow(emptyMap())
         coEvery { vaultDiskSource.getCollections(userId = userId) } returns collectionsFlow
         coEvery { vaultDiskSource.getDomains(userId = userId) } returns domainsFlow
         coEvery { vaultDiskSource.getFolders(userId = userId) } returns foldersFlow

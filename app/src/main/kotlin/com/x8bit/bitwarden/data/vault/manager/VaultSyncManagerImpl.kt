@@ -35,6 +35,7 @@ import com.x8bit.bitwarden.data.vault.repository.util.sortAlphabetically
 import com.x8bit.bitwarden.data.vault.repository.util.sortAlphabeticallyByTypeAndOrganization
 import com.x8bit.bitwarden.data.vault.repository.util.toDomainsData
 import com.x8bit.bitwarden.data.vault.repository.util.toEncryptedSdkCipherList
+import com.x8bit.bitwarden.data.vault.repository.util.populateLocalData
 import com.x8bit.bitwarden.data.vault.repository.util.toEncryptedSdkCollectionList
 import com.x8bit.bitwarden.data.vault.repository.util.toEncryptedSdkFolderList
 import com.x8bit.bitwarden.data.vault.repository.util.toEncryptedSdkSendList
@@ -397,20 +398,28 @@ class VaultSyncManagerImpl(
     private fun observeVaultDiskCiphersToCipherListView(
         userId: String,
     ): Flow<DataState<DecryptCipherListResult>> =
-        vaultDiskSource
-            .getCiphersFlow(userId = userId)
+        combine(
+            vaultDiskSource.getCiphersFlow(userId = userId),
+            vaultDiskSource.getCipherLastUsedDatesFlow(userId = userId),
+        ) { ciphers, lastUsedDates ->
+            ciphers to lastUsedDates
+        }
             .onStart { mutableDecryptCipherListResultFlow.updateToPendingOrLoading() }
-            .map {
+            .map { (ciphers, lastUsedDates) ->
                 vaultLockManager.waitUntilUnlocked(userId = userId)
                 vaultSdkSource
                     .decryptCipherListWithFailures(
                         userId = userId,
-                        cipherList = it.toEncryptedSdkCipherList(),
+                        cipherList = ciphers.toEncryptedSdkCipherList(),
                     )
                     .fold(
                         onSuccess = { result ->
                             DataState.Loaded(
-                                result.copy(successes = result.successes.sortAlphabetically()),
+                                result.copy(
+                                    successes = result.successes
+                                        .populateLocalData(lastUsedDates)
+                                        .sortAlphabetically(),
+                                ),
                             )
                         },
                         onFailure = { throwable -> DataState.Error(error = throwable) },
